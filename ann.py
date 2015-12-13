@@ -1,5 +1,7 @@
 import time
 import math
+#from math import exp
+from random import randrange
 from sys import exit
 #http://arctrix.com/nas/python/bpnn.py
 
@@ -20,13 +22,16 @@ def summation2(w, inp, no, minimum, maximum):
 
 def get_output_vector(value):
     if value[1] == '0':
-        return [1.0, 0, 0, 0]
-    if value[1] == '90':
-        return [0, 1.0, 0, 0]
-    if value[1] == '180':
-        return [0, 0, 1.0, 0]
+        return [1.0, -1.0, -1.0, -1.0]
+    elif value[1] == '90':
+        return [-1.0, 1.0, -1.0, -1.0]
+    elif value[1] == '180':
+        return [-1.0, -1.0, 1.0, -1.0]
+    elif value[1] == '270':
+        return [-1.0, -1.0, -1.0, 1.0]
     else:
-        return [0, 0, 0, 1.0]
+        "Error in fetching input"
+        exit()
 
 
 def g(val):
@@ -41,20 +46,22 @@ def g_dash(val):
 def initialize_weights(w, no_input_nodes, no_hidden_nodes, no_output_nodes):
     for x in range(no_input_nodes):
         for y in range(no_hidden_nodes):
-            w[(x, y + no_input_nodes)] = 0.5
+            w[(x, y + no_input_nodes)] = randrange(-1,1)*(1/192**0.5)
     for x in range(no_hidden_nodes):
         for y in range(no_output_nodes):
-            w[(x + no_input_nodes, y + no_input_nodes + no_hidden_nodes)] = 0.5
+            w[(x + no_input_nodes, y + no_input_nodes + no_hidden_nodes)] = randrange(-1,1)*(1/192**0.5)
     return w
 
 
 def update_weights(w, alpha, a, delta, no_input_nodes, no_hidden_nodes, no_output_nodes):
+    
     for x in range(no_input_nodes):
         for y in range(no_hidden_nodes):
             w[(x, y + no_input_nodes)] += a[x] * delta[y + no_input_nodes] * alpha
     for x in range(no_hidden_nodes):
         for y in range(no_output_nodes):
             w[(x + no_input_nodes, y + no_input_nodes + no_hidden_nodes)] += a[x + no_input_nodes] * delta[y + no_input_nodes + no_hidden_nodes] * alpha
+
     return w
 
 
@@ -68,7 +75,7 @@ def ann(train_vector):
     counter = 0
     for k in range(1):
         cnt=0.0
-        for i in train_vector.keys():
+        for i in train_vector.keys()[8000:12000]:
             counter += 1
             output_vector = get_output_vector(i)
             inp = {}
@@ -76,8 +83,6 @@ def ann(train_vector):
             #Forward Propogation
             for x in range(no_input_nodes):
                 a[x] = float(train_vector[i][1][x])/255
-            #print a
-            #print train_vector[i][1]
 
             for unit in range(no_input_nodes, no_input_nodes + no_hidden_nodes):
                 inp[unit] = summation1(w, a, unit, 0, no_input_nodes) + 1
@@ -90,7 +95,7 @@ def ann(train_vector):
                 inp[unit] = summation1(w, a, unit, no_input_nodes, no_input_nodes + no_hidden_nodes) + 1
                 a[unit] = g(inp[unit])
                 l.append(a[unit])
-            #print l
+            print l
             max12=l.index(max(l))
             actual=output_vector.index(1.0)
             if max12==actual:
@@ -100,8 +105,8 @@ def ann(train_vector):
                 delta[unit] = g_dash(inp[unit])*(output_vector[unit - no_input_nodes - no_hidden_nodes] - a[unit])
                 #print output_vector[unit - no_input_nodes - no_hidden_nodes]
                 #print a[unit]
-            #print output_vector[-4:]
-            #print delta
+            print output_vector[-4:]
+            print delta
             #exit()
             for unit in range(no_input_nodes, no_input_nodes + no_hidden_nodes):
                 delta[unit] = g_dash(inp[unit])*summation2(w, delta, unit, no_input_nodes + no_hidden_nodes, no_input_nodes + no_hidden_nodes + no_output_nodes)
@@ -113,6 +118,7 @@ def ann(train_vector):
             print "Test " + str(counter) + " done"
         print cnt
         print "Accuracy="+str(cnt/300)
+    print a
     print w
 
 
