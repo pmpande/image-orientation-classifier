@@ -21,13 +21,13 @@ def summation2(w, inp, no, minimum, maximum):
 
 
 def get_output_vector(value):
-    if value[1] == '0':
+    if value == '0':
         return [1.0, -1.0, -1.0, -1.0]
-    elif value[1] == '90':
+    elif value == '90':
         return [-1.0, 1.0, -1.0, -1.0]
-    elif value[1] == '180':
+    elif value == '180':
         return [-1.0, -1.0, 1.0, -1.0]
-    elif value[1] == '270':
+    elif value == '270':
         return [-1.0, -1.0, -1.0, 1.0]
     else:
         "Error in fetching input"
@@ -77,7 +77,7 @@ def ann(train_vector):
         cnt=0.0
         for i in train_vector.keys():
             counter += 1
-            output_vector = get_output_vector(i)
+            output_vector = get_output_vector(i[1])
             inp = {}
             delta = {}
             #Forward Propogation
@@ -122,14 +122,18 @@ def ann(train_vector):
     print w
     return w
 
-def test(test_vector,no_hidden_nodes,no_output_nodes,w):
+def testing(test_vector,no_hidden_nodes,no_output_nodes,w):
     cnt=0.0
     a = {}
-    no_input_nodes = len(test_vector)
+    no_input_nodes = 192
+    
     for i in test_vector.keys():
-        output_vector = get_output_vector(i)
+        print i
+        inp = {}
+        output_vector = get_output_vector(test_vector[i][0])
+        print output_vector
         for x in range(no_input_nodes):
-            a[x] = float(train_vector[i][1][x])/255
+            a[x] = float(test_vector[i][1][x])/255
         for unit in range(no_input_nodes, no_input_nodes + no_hidden_nodes):
             inp[unit] = summation1(w, a, unit, 0, no_input_nodes) + 1
             a[unit] = g(inp[unit])
@@ -157,18 +161,21 @@ def main():
     for line in test:
         line = line.split()
         test_vector[line[0]] = (line[1], line[2:])
-    print test_vector
-    exit()
-    w = ann(train_vector)
+    print type(train_vector)
+    #w = ann(train_vector)
+    '''
     weight = open("weights.txt","w")
     for k,v in w.items():
-        weight.write(k[0]," ",k[1]," ",v)
+        print k," ",v
+        weight.write(str(k[0])+" "+str(k[1])+" "+str(v)+"\n")
     weight.close()
+    '''
     weight = open("weights.txt","r")
     w = {}
     for line in weight:
         line = line.split()
-        w[(line[0], line[1])] = float(line[2])
-    test(test_vector,40,4,w)
+        w[(int(line[0]), int(line[1]))] = float(line[2])
+    #print w
+    testing(test_vector,40,4,w)
     print time.time() - start_time
 main()
