@@ -106,10 +106,12 @@ def main():
     start_time = time.time()
     train_vector = {}
     test_vector = {}
-    for line in open("train-data.txt"):
+    train = open("train-data.txt")
+    test = open("test-data.txt")
+    for line in train:
         line = line.split()
         train_vector[(line[0], line[1])] = (line[1], line[2:])
-    for line in open("test-data.txt"):
+    for line in test:
         line = line.split()
         test_vector[line[0]] = (line[1], line[2:])
     ann(train_vector)
