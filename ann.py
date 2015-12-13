@@ -75,7 +75,7 @@ def ann(train_vector):
     counter = 0
     for k in range(1):
         cnt=0.0
-        for i in train_vector.keys()[8000:12000]:
+        for i in train_vector.keys():
             counter += 1
             output_vector = get_output_vector(i)
             inp = {}
@@ -95,7 +95,7 @@ def ann(train_vector):
                 inp[unit] = summation1(w, a, unit, no_input_nodes, no_input_nodes + no_hidden_nodes) + 1
                 a[unit] = g(inp[unit])
                 l.append(a[unit])
-            print l
+            #print l
             max12=l.index(max(l))
             actual=output_vector.index(1.0)
             if max12==actual:
@@ -105,8 +105,8 @@ def ann(train_vector):
                 delta[unit] = g_dash(inp[unit])*(output_vector[unit - no_input_nodes - no_hidden_nodes] - a[unit])
                 #print output_vector[unit - no_input_nodes - no_hidden_nodes]
                 #print a[unit]
-            print output_vector[-4:]
-            print delta
+            #print output_vector[-4:]
+            #print delta
             #exit()
             for unit in range(no_input_nodes, no_input_nodes + no_hidden_nodes):
                 delta[unit] = g_dash(inp[unit])*summation2(w, delta, unit, no_input_nodes + no_hidden_nodes, no_input_nodes + no_hidden_nodes + no_output_nodes)
@@ -120,8 +120,31 @@ def ann(train_vector):
         print "Accuracy="+str(cnt/300)
     print a
     print w
+    return w
 
-
+def test(test_vector,no_hidden_nodes,no_output_nodes,w):
+    cnt=0.0
+    a = {}
+    no_input_nodes = len(test_vector)
+    for i in test_vector.keys():
+        output_vector = get_output_vector(i)
+        for x in range(no_input_nodes):
+            a[x] = float(train_vector[i][1][x])/255
+        for unit in range(no_input_nodes, no_input_nodes + no_hidden_nodes):
+            inp[unit] = summation1(w, a, unit, 0, no_input_nodes) + 1
+            a[unit] = g(inp[unit])
+        l = []
+        for unit in range(no_input_nodes + no_hidden_nodes, no_input_nodes + no_hidden_nodes + no_output_nodes):
+            inp[unit] = summation1(w, a, unit, no_input_nodes, no_input_nodes + no_hidden_nodes) + 1
+            a[unit] = g(inp[unit])
+            l.append(a[unit])
+        print output_vector[-4:]
+        print l
+        max12=l.index(max(l))
+        actual=output_vector.index(1.0)
+        if max12==actual:
+            cnt+=1
+    print cnt
 def main():
     start_time = time.time()
     train_vector = {}
@@ -134,6 +157,7 @@ def main():
     for line in test:
         line = line.split()
         test_vector[line[0]] = (line[1], line[2:])
-    ann(train_vector)
+    w = ann(train_vector)
+    test(test_vector,40,4,w)
     print time.time() - start_time
 main()
