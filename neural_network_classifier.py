@@ -78,6 +78,17 @@ def load_trained_data(file_name):
     return w
 
 
+def print_confusion_matrix(c):
+    print "Confusion Matrix:"
+    inp = ['0  ', '90 ', '180', '270']
+    print "   " + " 0 " + " 90 " + " 180 " + " 270 "
+    for x in range(4):
+        conf_string = inp[x] + " "
+        for y in range(4):
+            conf_string += str(c[str(x)][str(y)]) + " "
+        print conf_string
+
+
 def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_iterations, learning_rate):
 
     w = {}
@@ -133,8 +144,10 @@ def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_
 def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, output_file_name):
     cnt = 0.0
     a = {}
+    c = {'0':{'0': 0, '1': 0, '2': 0 ,'3' : 0},'1':{'0': 0, '1': 0, '2': 0 ,'3' : 0},'2':{'0': 0, '1': 0, '2': 0 ,'3' : 0},'3':{'0': 0, '1': 0, '2': 0 ,'3' : 0}}
     counter = 0
     output_file = open(output_file_name, "w")
+    incorrect = open("incorrect.txt", "w")
     for i in test_vector.keys():
         inp = {}
         target_vector = get_output_vector(test_vector[i][0])
@@ -153,11 +166,37 @@ def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, outpu
         max_index = output_vector.index(max(output_vector))
         actual = target_vector.index(1.0)
         counter += 1
+        c[str(actual)][str(max_index)] += 1
         if max_index == actual:
             cnt += 1
+        else:
+            if actual == 0:
+                actual = '0'
+            elif actual == 1:
+                actual = '90'
+            elif actual == 2:
+                actual = '180'
+            elif actual == 3:
+                actual = '270'
+            else:
+                pass
+            if max_index == 0:
+                max_index = '0'
+            elif max_index == 1:
+                max_index = '90'
+            elif max_index == 2:
+                max_index = '180'
+            elif max_index == 3:
+                max_index = '270'
+            else:
+                pass
+            incorrect.write(i+" "+actual+" "+max_index+"\n")
         output_file.write(str(i) + " " + str(max_index*90) + "\n")
         print "Test " + str(counter) + " done | Accuracy: " + "%.4f" % (cnt/counter*100.0) + " %"
+    incorrect.write("Confusion "+str(c)+"\n")
+    incorrect.close()
     output_file.close()
+    print_confusion_matrix(c)
     print "Accuracy: " + "%.4f" % (cnt/counter*100.0) + " %"
 
 

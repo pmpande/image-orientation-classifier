@@ -9,10 +9,22 @@ def euclidean_distance(a, b):
     return distance
 
 
+def print_confusion_matrix(c):
+    print "Confusion Matrix:"
+    inp = ['0  ', '90 ', '180', '270']
+    print "   " + " 0 " + " 90 " + " 180 " + " 270 "
+    for x in range(4):
+        conf_string = inp[x] + " "
+        for y in range(4):
+            conf_string += str(c[x*90][y*90]) + " "
+        print conf_string
+
+
 # Algorithm to classify given tests using k-nearest neighbour algorithm
 def knn(train_vector, test_vector, param):
     correct = 0
     count = 0
+    c = {0:{0: 0, 90: 0, 180: 0 ,270 : 0}, 90:{0: 0, 90: 0, 180: 0 ,270 : 0}, 180:{0: 0, 90: 0, 180: 0 ,270 : 0}, 270:{0: 0, 90: 0, 180: 0 ,270 : 0}}
     k = int(param)
     output_file = open("knn_output.txt", "w")
     for j in test_vector.keys()[:5]:
@@ -29,6 +41,8 @@ def knn(train_vector, test_vector, param):
         label = max_count.most_common()
         if label[0][0] == test_vector[j][0]:
             correct += 1
+        c[int(test_vector[j][0])][int(label[0][0])] += 1
         output_file.write(str(j) + " " + str(label[0][0]) + "\n")
     output_file.close()
+    print_confusion_matrix(c)
     print "Accuracy : " + str(correct*100.0/count)
