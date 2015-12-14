@@ -3,6 +3,7 @@ from random import randrange
 from sys import exit
 
 
+# Summation of all the inputs and corresponding weights for each hidden node
 def summation1(w, inp, no, minimum, maximum):
     result = 0
     for x in range(minimum, maximum):
@@ -10,6 +11,7 @@ def summation1(w, inp, no, minimum, maximum):
     return result
 
 
+# Summation of all the outputs and corresponding weights for each hidden node
 def summation2(w, inp, no, minimum, maximum):
     result = 0
     for x in range(minimum, maximum):
@@ -17,6 +19,7 @@ def summation2(w, inp, no, minimum, maximum):
     return result
 
 
+# Get the target output for a given actual class value
 def get_output_vector(value):
     if value == '0':
         return [1.0, 0, 0, 0]
@@ -31,14 +34,17 @@ def get_output_vector(value):
         exit()
 
 
+# Sigmoid function
 def g(val):
     return 1.0/(1.0 + exp(-val))
 
 
+# Derivative of sigmoid function
 def g_dash(val):
     return g(val)*(1.0 - g(val))
 
 
+# Initialize all weights with a random value between (-1, 1)
 def initialize_weights(w, no_input_nodes, no_hidden_nodes, no_output_nodes):
     for x in range(no_input_nodes):
         for y in range(no_hidden_nodes):
@@ -49,8 +55,8 @@ def initialize_weights(w, no_input_nodes, no_hidden_nodes, no_output_nodes):
     return w
 
 
+# Update weights based on the learning rate, error, inputs and weights
 def update_weights(w, alpha, a, delta, no_input_nodes, no_hidden_nodes, no_output_nodes):
-
     for x in range(no_input_nodes):
         for y in range(no_hidden_nodes):
             w[(x, y + no_input_nodes)] += a[x] * delta[y + no_input_nodes] * alpha
@@ -61,6 +67,7 @@ def update_weights(w, alpha, a, delta, no_input_nodes, no_hidden_nodes, no_outpu
     return w
 
 
+# Store all the weights attained after training in a text file
 def save_trained_data(w, file_name):
     weights = open(file_name, "w")
     for k, v in w.items():
@@ -68,6 +75,7 @@ def save_trained_data(w, file_name):
     weights.close()
 
 
+# Load all the weights attained after training from the file
 def load_trained_data(file_name):
     weights = open(file_name, "r")
     w = {}
@@ -78,6 +86,7 @@ def load_trained_data(file_name):
     return w
 
 
+# Function to print the confusion matrix
 def print_confusion_matrix(c):
     print "Confusion Matrix:"
     inp = ['0  ', '90 ', '180', '270']
@@ -89,14 +98,17 @@ def print_confusion_matrix(c):
         print conf_string
 
 
+# Function to train the neural network
 def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_iterations, learning_rate):
 
     w = {}
     w = initialize_weights(w, no_input_nodes, no_hidden_nodes, no_output_nodes)
+    # Loop over all the training samples multiple times
     for k in range(no_of_iterations):
         cnt = 0.0
         counter = 0
-        for i in train_vector.keys()[:1000]:
+        # Loop over each training sample
+        for i in train_vector.keys():
             counter += 1
 
             # Get target vector
@@ -124,6 +136,7 @@ def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_
 
             max_index = output_vector.index(max(output_vector))
             actual = target_vector.index(1.0)
+            # Check if output found is same as the target
             if max_index == actual:
                 cnt += 1
 
@@ -144,14 +157,18 @@ def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_
 def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, output_file_name):
     cnt = 0.0
     a = {}
+    # Matrix for confusion matrix
     c = {'0':{'0': 0, '1': 0, '2': 0 ,'3' : 0},'1':{'0': 0, '1': 0, '2': 0 ,'3' : 0},'2':{'0': 0, '1': 0, '2': 0 ,'3' : 0},'3':{'0': 0, '1': 0, '2': 0 ,'3' : 0}}
     counter = 0
+    # File to store the resultant test sample with its label
     output_file = open(output_file_name, "w")
+    # File to store incorrect examples for analysis
     incorrect = open("incorrect.txt", "w")
+    # Loop over each test sample
     for i in test_vector.keys():
         inp = {}
         target_vector = get_output_vector(test_vector[i][0])
-
+        # Find output using the trained network
         for x in range(no_input_nodes):
             a[x] = float(test_vector[i][1][x])/255
         for unit in range(no_input_nodes, no_input_nodes + no_hidden_nodes):
@@ -166,7 +183,9 @@ def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, outpu
         max_index = output_vector.index(max(output_vector))
         actual = target_vector.index(1.0)
         counter += 1
+        output_file.write(str(i) + " " + str(max_index*90) + "\n")
         c[str(actual)][str(max_index)] += 1
+        # Check if the output found is same as target
         if max_index == actual:
             cnt += 1
         else:
@@ -191,7 +210,6 @@ def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, outpu
             else:
                 pass
             incorrect.write(i+" "+actual+" "+max_index+"\n")
-        output_file.write(str(i) + " " + str(max_index*90) + "\n")
         print "Test " + str(counter) + " done | Accuracy: " + "%.4f" % (cnt/counter*100.0) + " %"
     incorrect.write("Confusion "+str(c)+"\n")
     incorrect.close()
@@ -210,4 +228,5 @@ def nnet(train_vector, test_vector, no_hidden_nodes, no_of_iterations, learning_
 
     save_trained_data(w, "trained_weights.txt")
     weights = load_trained_data("trained_weights.txt")
+    print "Testing Data..."
     test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, weights, output_file_name)
