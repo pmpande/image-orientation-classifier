@@ -8,7 +8,7 @@ def best(train_vector, test_vector, param):
     # param contains file name which contains pre-trained data
     # if param is present load trained data and test
     if param is not None:
-        weights = load_trained_data(param+".txt")
+        weights = load_trained_data(param)
         test(test_vector, 192, 40, 4, weights, "best_output.txt")
     # Else train the network first and then test
     else:
