@@ -3,6 +3,7 @@ import time
 from k_nearest_neighbour import knn
 from neural_network_classifier import nnet
 from best_method import best
+start_time = time.time()
 '''
 We have implemented KNN and ANN in seperate files and calling their appropriate methods in this file.
 Repository also includes trained weights and incorrect outputs from ANN using best configuration.
@@ -62,8 +63,6 @@ def main(train_file, test_file, algorithm, param):
     else:
         print "Unknown Algorithm"
 
-
-start_time = time.time()
 param1 = sys.argv[1]
 param2 = sys.argv[2]
 param3 = sys.argv[3]
