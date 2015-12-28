@@ -35,7 +35,7 @@ from neural_network_classifier import nnet
 from best_method import best
 start_time = time.time()
 
-
+# Author: Pranav Pande
 def main(train_file, test_file, algorithm, param):
     # Dictionary to store data from training and test files
     train_vector = {}

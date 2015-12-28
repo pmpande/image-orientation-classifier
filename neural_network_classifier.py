@@ -4,6 +4,7 @@ from sys import exit
 
 
 # Summation of all the inputs and corresponding weights for each hidden node
+# Author: Pranav Pande
 def summation1(w, inp, no, minimum, maximum):
     result = 0
     for x in range(minimum, maximum):
@@ -12,6 +13,7 @@ def summation1(w, inp, no, minimum, maximum):
 
 
 # Summation of all the outputs and corresponding weights for each hidden node
+# Author: Pranav Pande
 def summation2(w, inp, no, minimum, maximum):
     result = 0
     for x in range(minimum, maximum):
@@ -20,6 +22,7 @@ def summation2(w, inp, no, minimum, maximum):
 
 
 # Get the target output for a given actual class value
+# Author: Pranav Pande
 def get_output_vector(value):
     if value == '0':
         return [1.0, 0, 0, 0]
@@ -35,16 +38,19 @@ def get_output_vector(value):
 
 
 # Sigmoid function
+# Author: Pranav Pande
 def g(val):
     return 1.0/(1.0 + exp(-val))
 
 
 # Derivative of sigmoid function
+# Author: Pranav Pande
 def g_dash(val):
     return g(val)*(1.0 - g(val))
 
 
 # Initialize all weights with a random value between (-1, 1)
+# Author: Pranav Pande
 def initialize_weights(w, no_input_nodes, no_hidden_nodes, no_output_nodes):
     for x in range(no_input_nodes):
         for y in range(no_hidden_nodes):
@@ -56,6 +62,7 @@ def initialize_weights(w, no_input_nodes, no_hidden_nodes, no_output_nodes):
 
 
 # Update weights based on the learning rate, error, inputs and weights
+# Author: Pranav Pande
 def update_weights(w, alpha, a, delta, no_input_nodes, no_hidden_nodes, no_output_nodes):
     for x in range(no_input_nodes):
         for y in range(no_hidden_nodes):
@@ -68,6 +75,7 @@ def update_weights(w, alpha, a, delta, no_input_nodes, no_hidden_nodes, no_outpu
 
 
 # Store all the weights attained after training in a text file
+# Author: Pranav Pande
 def save_trained_data(w, file_name):
     weights = open(file_name, "w")
     for k, v in w.items():
@@ -76,6 +84,7 @@ def save_trained_data(w, file_name):
 
 
 # Load all the weights attained after training from the file
+# Author: Pranav Pande
 def load_trained_data(file_name):
     weights = open(file_name, "r")
     w = {}
@@ -87,6 +96,7 @@ def load_trained_data(file_name):
 
 
 # Function to print the confusion matrix
+# Author: Pranav Pande
 def print_confusion_matrix(c):
     print "Confusion Matrix:"
     inp = ['0  ', '90 ', '180', '270']
@@ -99,6 +109,7 @@ def print_confusion_matrix(c):
 
 
 # Function to train the neural network
+# Author: Pranav Pande and Nishant Shah
 def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_iterations, learning_rate):
 
     w = {}
@@ -153,7 +164,7 @@ def train(train_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, no_of_
         print cnt
     return w
 
-
+# Author: Pranav Pande and Nishant Shah
 def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, output_file_name):
     cnt = 0.0
     a = {}
@@ -217,7 +228,7 @@ def test(test_vector, no_input_nodes, no_hidden_nodes, no_output_nodes, w, outpu
     print_confusion_matrix(c)
     print "Accuracy: " + "%.4f" % (cnt/counter*100.0) + " %"
 
-
+# Author: Pranav Pande
 def nnet(train_vector, test_vector, no_hidden_nodes, no_of_iterations, learning_rate, output_file_name):
 
     no_input_nodes = 192

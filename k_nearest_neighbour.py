@@ -2,6 +2,7 @@ from collections import Counter
 
 
 # Function for calculating distance between training and test sample
+# Author: Pranav Pande
 def euclidean_distance(a, b):
     distance = 0
     for x in xrange(0, len(a)):
@@ -10,6 +11,7 @@ def euclidean_distance(a, b):
 
 
 # Function to print confusion matrix
+# Author: Pranav Pande
 def print_confusion_matrix(c):
     print "Confusion Matrix:"
     inp = ['0  ', '90 ', '180', '270']
@@ -22,6 +24,7 @@ def print_confusion_matrix(c):
 
 
 # Algorithm to classify given tests using k-nearest neighbour algorithm
+# Author: Pranav Pande
 def knn(train_vector, test_vector, param):
     correct = 0
     count = 0
@@ -56,3 +59,4 @@ def knn(train_vector, test_vector, param):
     output_file.close()
     print_confusion_matrix(c)
     print "Accuracy : " + str(correct*100.0/count)
+    

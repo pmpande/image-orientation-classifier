@@ -4,6 +4,7 @@ from neural_network_classifier import nnet
 
 
 # Neural Network Classifier Algorithm with fine tuned parameters
+# Author : Pranav Pande
 def best(train_vector, test_vector, param):
     # param contains file name which contains pre-trained data
     # if param is present load trained data and test
